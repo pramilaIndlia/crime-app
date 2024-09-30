@@ -5,15 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 
 
+
 Route::post('register', [ApiController::class, 'register']);
-// http://127.0.0.1:8000/api/register
+
 Route::post('login', [ApiController::class, 'login']);
 
 Route::group([
     "middleware" => ["auth:sanctum"],
 ], function () {
-    Route::get("profile", [ApiController::class, 'profile']);
-    Route::get("logout", [ApiController::class, 'logout']);
+    Route::get("profile", [ApiController::class, 'show']);
+    Route::put('users/{id}', [ApiController::class, 'updateUser']);
+
+    Route::post("logout", [ApiController::class, 'logout']);
 });
 
 // Route::get('/user', function (Request $request) {
