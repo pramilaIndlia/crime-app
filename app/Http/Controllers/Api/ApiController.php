@@ -9,39 +9,37 @@ use Error;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use ResetsPasswords;
+
+
 
 class ApiController extends Controller
 {
     public function register(Request $request)
     {
         try {
-            // Validate the request
             $request->validate([
                 'name' => 'required|string|max:255',
-                'emailid' => 'required|email|unique:users,emailid',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => 'required|string|max:15',
+                'phone' => 'required|numeric|digits:10',
             ]);
 
-            // Log the incoming request data
             Log::info('User creation request data:', [
                 'name' => $request->name,
-                'emailid' => $request->emailid,
+                'email' => $request->email,
                 'phone' => $request->phone
             ]);
 
-            // Create a new user
             $user = User::create([
                 'name' => $request->name,
-                'emailid' => $request->emailid,
+                'email' => $request->email,
                 'phone' => $request->phone,
                 'password' => Hash::make($request->password),
             ]);
 
-            // Log the created user data
             Log::info('Created User:', $user->toArray());
 
-            // Return the response
             return response()->json([
                 "status" => true,
                 "message" => "User created Successfully",
@@ -60,14 +58,13 @@ class ApiController extends Controller
 
     public function login(Request $request)
     {
-        // Validate login credentials
         $request->validate([
-            'emailid' => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|string|min:8',
         ]);
 
-        // Check if the user exists
-        $user = User::where('emailid', $request->emailid)->first();
+
+        $user = User::where('email', $request->email)->first();
 
 
         if ($user && Hash::check($request->password, $user->password)) {
@@ -92,39 +89,35 @@ class ApiController extends Controller
     }
     public function updateUser(Request $request, $id)
     {
-        // Validate the request
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'emailid' => 'sometimes|required|email|unique:users,emailid,' . $id,
+            'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
             'phone' => 'sometimes|required|string|max:15',
         ]);
 
-        // Find the user
+
         $user = User::find($id);
 
         if ($user) {
-            // Update user details
+
             $user->name = $request->name;
-            $user->emailid = $request->emailid;
+            $user->email = $request->email;
             $user->phone = $request->phone;
 
-            // Check if password is filled, then hash and update it
+
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
 
-            // Save the changes
             $user->save();
 
-            // Return success response
             return response()->json([
                 "status" => true,
                 "message" => "User updated successfully",
                 "data" => $user,
             ], 200);
         } else {
-            // Return 404 response if user is not found
             return response()->json([
                 'status' => false,
                 'message' => 'User not found',
@@ -134,7 +127,6 @@ class ApiController extends Controller
 
     public function logout(Request $request)
     {
-        // Revoke all tokens  for the user
         $request->user()->tokens()->delete();
 
         return response()->json([
