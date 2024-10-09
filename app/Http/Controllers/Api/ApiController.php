@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Error;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use ResetsPasswords;
+
 
 
 
@@ -123,6 +122,16 @@ class ApiController extends Controller
                 'message' => 'User not found',
             ], 404);
         }
+    }
+    public function show()
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            "status" => true,
+            "message" => "User profile viewed Successfully",
+            "data" => $user,
+        ], 200);
     }
 
     public function logout(Request $request)
