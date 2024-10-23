@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+    /* 
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'google_maps' => [
+        'api_key' => env('AIzaSyB8icl26mqovWAoDAXB9wOv6Y81JkJxtKg'),
+    ],
+
 
 ];

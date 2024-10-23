@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 
 
 
@@ -53,7 +55,6 @@ class ApiController extends Controller
             ], 500);
         }
     }
-
 
     public function login(Request $request)
     {
