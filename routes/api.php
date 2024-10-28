@@ -8,15 +8,11 @@ use App\Http\Controllers\Api\LocationController;
 
 
 Route::post('register', [ApiController::class, 'register']);
-
 Route::post('login', [ApiController::class, 'login']);
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
 
-Route::get('forgot-password', [ForgotPasswordController::class, 'store'])->name('password.request');
-Route::post('forgot-password', [ForgotPasswordController::class, 'store'])->name('password.email');
 
-// Reset Password Routes
-Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 Route::group([
     "middleware" => ["auth:sanctum"],
 ], function () {
